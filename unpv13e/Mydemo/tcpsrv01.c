@@ -30,15 +30,31 @@ int main()
 	srvAddr.sin_port = SERV_PORT;
 	Bind(listenSock, (SA*)&srvAddr, sizeof(srvAddr));
 
+	void sig_chld(int);
+
 	Listen(listenSock, LISTENQ);
+
+	Signal(SIGCHLD, sig_chld);
 
 	struct sockaddr_in cliAddr;
 	bzero(&cliAddr, sizeof(cliAddr));
 	pid_t childpid = 0;
 	for ( ; ; )
 	{
-		int len = sizeof(cliAddr);
-		int connfd = Accept(listenSock, (SA*)&cliAddr, &len);
+		socklen_t len = sizeof(cliAddr);
+		int connfd = 0;
+		if ((connfd = accept(listenSock, (SA*)&cliAddr, &len)) < 0)
+		{
+			if (errno == EINTR)
+			{
+				continue;
+			}
+			else
+			{
+				err_sys("accept error");
+			}
+		}
+
 		if ((childpid = fork()) == 0) // children process
 		{
 			Close(listenSock);
