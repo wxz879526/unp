@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 	bzero(&srvAddr, sizeof(srvAddr));
 	srvAddr.sin_family = AF_INET;
 	inet_pton(AF_INET, argv[1], &srvAddr.sin_addr.s_addr);
-	srvAddr.sin_port = SERV_PORT;
+	srvAddr.sin_port = htons(SERV_PORT);
 
 	Connect(connectfd, (SA*)&srvAddr, sizeof(srvAddr));
 
