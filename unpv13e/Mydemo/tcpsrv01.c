@@ -27,7 +27,7 @@ int main()
 	bzero(&srvAddr, sizeof(srvAddr));
 	srvAddr.sin_family = AF_INET;
 	srvAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	srvAddr.sin_port = SERV_PORT;
+	srvAddr.sin_port = htons(SERV_PORT);
 	Bind(listenSock, (SA*)&srvAddr, sizeof(srvAddr));
 
 	void sig_chld(int);
